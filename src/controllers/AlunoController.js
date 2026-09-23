@@ -36,7 +36,23 @@ class AlunoController {
         aluno,
       });
     } catch (error) {
-      return response.status(error.statusCode).json({
+      return response.status(error.statusCode || 500).json({
+        error: error.message,
+      });
+    }
+  }
+
+  // [COMMIT 2 - REQUISITO 2]
+  // Retorna um aluno pelo ID informado na URL.
+  async findById(request, response) {
+    try {
+      const aluno = await alunoService.findById(request.params.id);
+
+      return response.status(200).json({
+        aluno,
+      });
+    } catch (error) {
+      return response.status(error.statusCode || 500).json({
         error: error.message,
       });
     }

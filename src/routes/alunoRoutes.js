@@ -4,10 +4,14 @@ const validarAluno = require("../middlewares/validarAluno");
 
 const router = express.Router();
 
-router.get("/",(request, response, next)=>{
-    console.log("Executando antes do findMany");
-    next();
+router.get("/", (request, response, next) => {
+  console.log("Executando antes do findMany");
+  next();
 }, alunoController.findMany);
 router.post("/", validarAluno, alunoController.create);
+
+// [COMMIT 2 - REQUISITO 2]
+// Busca um aluno pelo ID.
+router.get("/:id", alunoController.findById);
 
 module.exports = router;

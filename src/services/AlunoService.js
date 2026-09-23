@@ -4,6 +4,10 @@ const AlunoInvalidoError = require("../errors/AlunoInvalidoError");
 // [COMMIT 1 - REQUISITO 1] Erro para page/pageSize/orderBy/order inválidos.
 const PaginacaoInvalidaError = require("../errors/PaginacaoInvalidaError");
 
+// [COMMIT 2 - REQUISITO 2]
+// Importa a exceção específica para aluno inexistente.
+const AlunoNaoEncontradoError = require("../errors/AlunoNaoEncontradoError");
+
 const CAMPOS_ORDENAVEIS = [
   "id",
   "nome",
@@ -76,6 +80,22 @@ class AlunoService {
     });
 
     return novoAluno;
+  }
+
+  // [COMMIT 2 - REQUISITO 2]
+  // Busca um aluno pelo ID usando findUnique.
+  async findById(id) {
+    const aluno = await prisma.aluno.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (!aluno) {
+      throw new AlunoNaoEncontradoError();
+    }
+
+    return aluno;
   }
 }
 
