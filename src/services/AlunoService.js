@@ -158,6 +158,29 @@ class AlunoService {
       throw error;
     }
   }
+
+  // [COMMIT 4 - REQUISITO 4]
+  // Remove um aluno pelo ID usando prisma.aluno.delete().
+  async delete(id) {
+    // Reutiliza findById para verificar se o aluno existe.
+    await this.findById(id);
+
+    try {
+      return await prisma.aluno.delete({
+        where: {
+          id: Number(id),
+        },
+      });
+    } catch (error) {
+      // [COMMIT 4 - REQUISITO 4]
+      // P2025 indica que o registro não foi encontrado.
+      if (error.code === "P2025") {
+        throw new AlunoNaoEncontradoError();
+      }
+
+      throw error;
+    }
+  }
 }
 
 module.exports = new AlunoService();

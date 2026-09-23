@@ -76,6 +76,19 @@ class AlunoController {
       });
     }
   }
+
+  // [COMMIT 4 - REQUISITO 4]
+  // Remove um aluno e retorna 204 sem corpo.
+  async delete(request, response) {
+    try {
+      await alunoService.delete(request.params.id);
+      return response.status(204).end();
+    } catch (error) {
+      return response.status(error.statusCode || 500).json({
+        error: error.message,
+      });
+    }
+  }
 }
 
 module.exports = new AlunoController();

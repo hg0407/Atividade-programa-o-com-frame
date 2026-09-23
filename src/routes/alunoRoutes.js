@@ -18,4 +18,8 @@ router.get("/:id", alunoController.findById);
 // Atualiza nome e/ou email do aluno.
 router.patch("/:id", alunoController.update);
 
+// [COMMIT 4 - REQUISITO 4]
+// Remove um aluno pelo ID.
+router.delete("/:id", alunoController.delete);
+
 module.exports = router;
