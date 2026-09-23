@@ -8,6 +8,11 @@ const PaginacaoInvalidaError = require("../errors/PaginacaoInvalidaError");
 // Importa a exceção específica para aluno inexistente.
 const AlunoNaoEncontradoError = require("../errors/AlunoNaoEncontradoError");
 
+// [COMMIT 3 - REQUISITO 3]
+// Exceções específicas do processo de atualização.
+const DadosAtualizacaoInvalidosError = require("../errors/DadosAtualizacaoInvalidosError");
+const EmailDuplicadoError = require("../errors/EmailDuplicadoError");
+
 const CAMPOS_ORDENAVEIS = [
   "id",
   "nome",
@@ -96,6 +101,62 @@ class AlunoService {
     }
 
     return aluno;
+  }
+
+  // [COMMIT 3 - REQUISITO 3]
+  // Atualiza somente nome e/ou email enviados pelo cliente.
+  async update(id, dados) {
+    const dadosAtualizacao = dados ?? {};
+    const data = {};
+
+    if (dadosAtualizacao.nome !== undefined) {
+      if (
+        typeof dadosAtualizacao.nome !== "string" ||
+        !dadosAtualizacao.nome.trim()
+      ) {
+        throw new AlunoInvalidoError("Nome não pode ser vazio");
+      }
+
+      data.nome = dadosAtualizacao.nome.trim();
+    }
+
+    if (dadosAtualizacao.email !== undefined) {
+      if (
+        typeof dadosAtualizacao.email !== "string" ||
+        !dadosAtualizacao.email.trim()
+      ) {
+        throw new AlunoInvalidoError("Email não pode ser vazio");
+      }
+
+      data.email = dadosAtualizacao.email.trim();
+    }
+
+    // [COMMIT 3 - REQUISITO 3]
+    // Impede update sem campos válidos.
+    if (Object.keys(data).length === 0) {
+      throw new DadosAtualizacaoInvalidosError();
+    }
+
+    // [COMMIT 3 - REQUISITO 3]
+    // Reaproveita o findById do Commit 2 para tratar aluno inexistente.
+    await this.findById(id);
+
+    try {
+      return await prisma.aluno.update({
+        where: {
+          id: Number(id),
+        },
+        data,
+      });
+    } catch (error) {
+      // [COMMIT 3 - REQUISITO 3]
+      // P2002 indica violação do @unique do campo email.
+      if (error.code === "P2002") {
+        throw new EmailDuplicadoError();
+      }
+
+      throw error;
+    }
   }
 }
 

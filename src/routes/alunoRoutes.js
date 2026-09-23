@@ -14,4 +14,8 @@ router.post("/", validarAluno, alunoController.create);
 // Busca um aluno pelo ID.
 router.get("/:id", alunoController.findById);
 
+// [COMMIT 3 - REQUISITO 3]
+// Atualiza nome e/ou email do aluno.
+router.patch("/:id", alunoController.update);
+
 module.exports = router;

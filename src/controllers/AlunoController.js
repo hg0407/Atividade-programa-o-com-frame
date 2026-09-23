@@ -57,6 +57,25 @@ class AlunoController {
       });
     }
   }
+
+  // [COMMIT 3 - REQUISITO 3]
+  // Atualiza parcialmente um aluno e devolve o registro atualizado.
+  async update(request, response) {
+    try {
+      const aluno = await alunoService.update(
+        request.params.id,
+        request.body,
+      );
+
+      return response.status(200).json({
+        aluno,
+      });
+    } catch (error) {
+      return response.status(error.statusCode || 500).json({
+        error: error.message,
+      });
+    }
+  }
 }
 
 module.exports = new AlunoController();
